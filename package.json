@@ -1,0 +1,19 @@
+{
+  "name": "cosmos-chronicles",
+  "version": "1.0.0",
+  "description": "Интерактивный 3D-сайт про космос и релятивистскую физику",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "space",
+    "threejs",
+    "cosmos",
+    "astronomy",
+    "blackhole"
+  ],
+  "author": "",
+  "license": "MIT"
+}

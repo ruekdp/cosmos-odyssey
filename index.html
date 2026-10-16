@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COSMOS // Хроники Вселенной — Интерактивная Космическая Одиссея</title>
+  <meta name="description" content="Интерактивный 3D-эксплорер глубин Вселенной: черные дыры, релятивистское замедление времени, экзопланеты и гиперпространственный прыжок.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  
+  <!-- Google Fonts: Orbitron, Space Grotesk, Syne -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Space+Grotesk:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Three.js & GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="void-theme">
+  <!-- Dynamic 3D WebGL Canvas Layer -->
+  <div id="webgl-container"></div>
+  
+  <!-- Holographic Grid & Vignette Overlays -->
+  <div class="space-vignette"></div>
+  <div class="cyber-scanlines"></div>
+  <div class="star-dust-overlay"></div>
+
+  <!-- Cosmic Audio Atmospheric Controller -->
+  <div class="audio-control-hub">
+    <button id="audio-toggle-btn" class="glass-pill" aria-label="Включить космический эмбиент">
+      <span class="audio-wave-bars">
+        <span class="bar bar-1"></span>
+        <span class="bar bar-2"></span>
+        <span class="bar bar-3"></span>
+        <span class="bar bar-4"></span>
+      </span>
+      <span class="audio-label" id="audio-status-text">ЭМБИЕНТ: ВЫКЛ</span>
+    </button>
+  </div>
+
+  <!-- Warp Drive / Hyperspace Overlay -->
+  <div id="warp-flash-overlay"></div>
+
+  <!-- HUD Header Navigation -->
+  <header class="hud-header" id="hud-nav">
+    <div class="hud-brand">
+      <div class="brand-symbol">
+        <div class="pulse-ring"></div>
+        <div class="core-singularity"></div>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">COSMOS // ОДИССЕЯ</span>
+        <span class="brand-sub">ASTROPHYSICS RESEARCH HUB</span>
+      </div>
+    </div>
+
+    <nav class="hud-nav-links">
+      <a href="#hero" class="nav-link active" data-nav="hero">Главная</a>
+      <a href="#planetarium" class="nav-link" data-nav="planetarium">Обсерватория 3D</a>
+      <a href="#spacetime" class="nav-link" data-nav="spacetime">Черные Дыры</a>
+      <a href="#dilation" class="nav-link" data-nav="dilation">Время Эйнштейна</a>
+      <a href="#exoplanets" class="nav-link" data-nav="exoplanets">Экзомиры</a>
+      <a href="#phenomena" class="nav-link" data-nav="phenomena">Феномены</a>
+    </nav>
+
+    <div class="hud-actions">
+      <button id="warp-drive-btn" class="warp-btn glow-hover" title="Включить гиперпространственный прыжок">
+        <span class="warp-icon">⚡</span>
+        <span class="warp-text">ВАРП-ПРЫЖОК</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Live Telemetry HUD Bar (Top Sub-bar) -->
+  <aside class="telemetry-bar">
+    <div class="telemetry-item">
+      <span class="t-label">КООРДИНАТЫ:</span>
+      <span class="t-val" id="t-coords">RA 17h 45m / DEC -29° 00'</span>
+    </div>
+    <div class="telemetry-item">
+      <span class="t-label">ДИСТАНЦИЯ:</span>
+      <span class="t-val" id="t-distance">26,000 СВ. ЛЕТ</span>
+    </div>
+    <div class="telemetry-item">
+      <span class="t-label">СКОРОСТЬ ВАРПА:</span>
+      <span class="t-val highlight-val" id="t-warp-factor">WARP 1.0 (c)</span>
+    </div>
+    <div class="telemetry-item">
+      <span class="t-label">АКТИВНЫЙ ОБЪЕКТ:</span>
+      <span class="t-val" id="t-target-name">СИНГУЛЯРНОСТЬ ГАРГАНТЮА</span>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <main class="page-scroller">
+
+    <!-- SECTION 1: HERO EPIC INTRO -->
+    <section id="hero" class="space-section hero-section">
+      <div class="hero-content">
+        <div class="badge-tag">
+          <span class="ping-dot"></span>
+          ГЛУБОКИЙ КОСМОС • СЕКТОР ЗЕМЛЯ-0
+        </div>
+        
+        <h1 class="hero-glitch-title">
+          <span class="title-line-1">ТАЙНЫ</span>
+          <span class="title-line-2 gradient-cosmic">СИНГУЛЯРНОСТИ</span>
+        </h1>
+        
+        <p class="hero-desc">
+          Погрузитесь в бездну непознанного. Исследуйте рождение сверхновых, горизонты событий черных дыр, искривление времени и экзопланеты в интерактивной 3D-симуляции реального времени.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#planetarium" class="btn-neon-primary glow-cyan">
+            <span>ЗАПУСТИТЬ СИМУЛЯЦИЮ</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <button id="hero-quick-warp" class="btn-neon-secondary glow-purple">
+            <span>СВЕРХСВЕТОВОЙ ИМПУЛЬС</span>
+            <span class="pulse-spark">✦</span>
+          </button>
+        </div>
+
+        <!-- Real-time dynamic cosmic metrics -->
+        <div class="hero-metrics-grid">
+          <div class="metric-card glass-panel">
+            <span class="metric-num" id="stat-age">13.8</span>
+            <span class="metric-unit">МЛРД ЛЕТ</span>
+            <span class="metric-desc">Возраст Вселенной</span>
+          </div>
+          <div class="metric-card glass-panel">
+            <span class="metric-num" id="stat-galaxies">2 000</span>
+            <span class="metric-unit">МЛРД</span>
+            <span class="metric-desc">Оцениваемых галактик</span>
+          </div>
+          <div class="metric-card glass-panel">
+            <span class="metric-num" id="stat-c">299 792</span>
+            <span class="metric-unit">КМ/С</span>
+            <span class="metric-desc">Скорость света в вакууме</span>
+          </div>
+          <div class="metric-card glass-panel">
+            <span class="metric-num" id="stat-temp">-270.4</span>
+            <span class="metric-unit">°C</span>
+            <span class="metric-desc">Реликтовое излучение</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="scroll-beacon">
+        <span class="beacon-text">ИССЛЕДОВАТЬ ГЛУБИНЫ</span>
+        <div class="mouse-icon">
+          <div class="wheel"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: 3D OBSERVATORY / PLANETARIUM -->
+    <section id="planetarium" class="space-section observatory-section">
+      <div class="section-header">
+        <div class="badge-tag">ИНТЕРАКТИВНЫЙ 3D МОДУЛЬ</div>
+        <h2 class="section-title">ОБСЕРВАТОРИЯ НЕБЕСНЫХ ТЕЛ</h2>
+        <p class="section-subtitle">Вращайте, масштабируйте и исследуйте физические свойства космических гигантов в реальном времени</p>
+      </div>
+
+      <!-- Planet Selector Tabs -->
+      <div class="planet-selector-bar">
+        <button class="selector-tab active" data-target="blackhole">
+          <span class="tab-indicator"></span>
+          <span class="tab-name">ЧЕРНАЯ ДЫРА</span>
+          <span class="tab-sub">Сингулярность</span>
+        </button>
+        <button class="selector-tab" data-target="earth">
+          <span class="tab-indicator"></span>
+          <span class="tab-name">ЗЕМЛЯ</span>
+          <span class="tab-sub">Колыбель жизни</span>
+        </button>
+        <button class="selector-tab" data-target="saturn">
+          <span class="tab-indicator"></span>
+          <span class="tab-name">САТУРН</span>
+          <span class="tab-sub">Властелин Колец</span>
+        </button>
+        <button class="selector-tab" data-target="kepler">
+          <span class="tab-indicator"></span>
+          <span class="tab-name">KEPLER-452B</span>
+          <span class="tab-sub">Суперземля</span>
+        </button>
+        <button class="selector-tab" data-target="pulsar">
+          <span class="tab-indicator"></span>
+          <span class="tab-name">НЕЙТРОННЫЙ ПУЛЬСАР</span>
+          <span class="tab-sub">Магнитный шторм</span>
+        </button>
+      </div>
+
+      <!-- Main Planetarium HUD Display -->
+      <div class="planetarium-viewport-wrapper">
+        <!-- Interactive 3D Canvas Anchor (Three.js renders into background or localized here) -->
+        <div class="observatory-overlay-card glass-panel" id="planet-hud-card">
+          <div class="card-header">
+            <span class="object-badge" id="obj-type-badge">СВЕРХМАССИВНАЯ ЧЕРНАЯ ДЫРА</span>
+            <div class="live-pulse-status"><span class="pulse-dot"></span> СИГНАЛ СТАБИЛЕН</div>
+          </div>
+          
+          <h3 class="object-title" id="obj-display-name">ГАРГАНТЮА</h3>
+          <p class="object-description" id="obj-desc-text">
+            Гравитационный колодец такой невероятной силы, что даже фотоны света не способны преодолеть горизонт событий. Аккреционный диск разогрет до миллионов градусов и генерирует мощнейшее релятивистское излучение.
+          </p>
+
+          <div class="specs-grid">
+            <div class="spec-cell">
+              <span class="spec-label">МАССА:</span>
+              <span class="spec-value highlight-cyan" id="spec-mass">100 млн M☉</span>
+            </div>
+            <div class="spec-cell">
+              <span class="spec-label">РАДИУС ШВАРЦШИЛЬДА:</span>
+              <span class="spec-value" id="spec-radius">300 млн км</span>
+            </div>
+            <div class="spec-cell">
+              <span class="spec-label">ТЕМПЕРАТУРА ДИСКА:</span>
+              <span class="spec-value highlight-amber" id="spec-temp">~10,000,000 K</span>
+            </div>
+            <div class="spec-cell">
+              <span class="spec-label">ВРАЩЕНИЕ (СПИН a*):</span>
+              <span class="spec-value" id="spec-rotation">0.998 c (Керр)</span>
+            </div>
+          </div>
+
+          <div class="interactive-controls-row">
+            <button id="toggle-wireframe-btn" class="glass-btn">
+              <span>СЕТКА / HUD</span>
+            </button>
+            <button id="toggle-spin-speed" class="glass-btn">
+              <span>УСКОРИТЬ ВРАЩЕНИЕ</span>
+            </button>
+            <button id="reset-cam-btn" class="glass-btn">
+              <span>СБРОС КАМЕРЫ</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3D Manipulation hints -->
+        <div class="canvas-hints glass-panel">
+          <span class="hint-item"><kbd>ЛКМ</kbd> Вращение сцены</span>
+          <span class="hint-item"><kbd>Колесо</kbd> Зуммирование</span>
+          <span class="hint-item"><kbd>ПКМ</kbd> Смещение</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: BLACK HOLES & SPACETIME LENSING -->
+    <section id="spacetime" class="space-section spacetime-section">
+      <div class="section-header">
+        <div class="badge-tag">РЕВИЗИЯ ТЕОРИИ ОТНОСИТЕЛЬНОСТИ</div>
+        <h2 class="section-title">АНАТОМИЯ СИНГУЛЯРНОСТИ</h2>
+        <p class="section-subtitle">Как черная дыра искажает саму структуру пространства и времени</p>
+      </div>
+
+      <div class="spacetime-interactive-container">
+        <!-- Interactive Canvas for Spacetime Grid Distortion -->
+        <div class="grid-canvas-box glass-panel">
+          <div class="canvas-title-bar">
+            <span>СИМУЛЯЦИЯ ИСКРИВЛЕНИЯ ПРОСТРАНСТВА-ВРЕМЕНИ</span>
+            <span class="canvas-tag">КВАНТОВАЯ СЕТКА</span>
+          </div>
+          <canvas id="spacetime-canvas"></canvas>
+          <div class="canvas-footer-tip">
+            <span>✨ Кликните и перемещайте курсор по сетке, чтобы создать гравитационную воронку массы</span>
+          </div>
+        </div>
+
+        <!-- Educational Explanatory Cards with Hologram Styling -->
+        <div class="spacetime-cards-column">
+          <div class="info-card glass-panel glow-cyan-hover">
+            <div class="info-icon">🕳️</div>
+            <div class="info-body">
+              <h4>Горизонт Событий</h4>
+              <p>Точка невозврата. Внутренняя граница, где вторая космическая скорость превышает скорость света. Любая материя и информация, пересекшая этот порог, навсегда исчезает из нашей Вселенной.</p>
+            </div>
+          </div>
+
+          <div class="info-card glass-panel glow-purple-hover">
+            <div class="info-icon">💫</div>
+            <div class="info-body">
+              <h4>Гравитационное Линзирование</h4>
+              <p>Массивный объект искажает лучи света от далеких звезд за ним, действуя как гигантская космическая линза, создавая кольца Эйнштейна и оптические миражи.</p>
+            </div>
+          </div>
+
+          <div class="info-card glass-panel glow-amber-hover">
+            <div class="info-icon">⚡</div>
+            <div class="info-body">
+              <h4>Релятивистские Джеты</h4>
+              <p>Сверхмощные струи плазмы, вырывающиеся из полюсов черной дыры со скоростью 99.9% от скорости света под действием колоссальных закрученных магнитных полей.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: TIME DILATION LAB (INTERSTELLAR EXPERIENCE) -->
+    <section id="dilation" class="space-section dilation-section">
+      <div class="section-header">
+        <div class="badge-tag">ЭФФЕКТ МИЛЛЕРА</div>
+        <h2 class="section-title">ИНТЕРАКТИВНОЕ ЗАМЕДЛЕНИЕ ВРЕМЕНИ</h2>
+        <p class="section-subtitle">«Один час на этой планете равен семи годам на Земле». Проверьте математику общей теории относительности</p>
+      </div>
+
+      <div class="dilation-lab glass-panel">
+        <div class="lab-controls">
+          <div class="slider-control-group">
+            <div class="slider-header">
+              <label for="gravity-slider">Близость к горизонту событий (в радиусах $R_s$):</label>
+              <span class="slider-display-val" id="proximity-val">1.05 Rs</span>
+            </div>
+            <input type="range" id="gravity-slider" min="1.01" max="10" step="0.01" value="1.05" class="cyber-slider">
+            <div class="slider-ticks">
+              <span>Сингулярность (1.01 Rs)</span>
+              <span>Орбита фотонов (1.5 Rs)</span>
+              <span>Безопасная зона (10 Rs)</span>
+            </div>
+          </div>
+
+          <div class="slider-control-group" style="margin-top: 25px;">
+            <div class="slider-header">
+              <label for="speed-slider">Орбитальная релятивистская скорость (% от скорости света):</label>
+              <span class="slider-display-val" id="speed-val">99.4% c</span>
+            </div>
+            <input type="range" id="speed-slider" min="0" max="99.9" step="0.1" value="99.4" class="cyber-slider cyan-track">
+          </div>
+        </div>
+
+        <!-- Dual Clocks Display -->
+        <div class="dual-clocks-wrapper">
+          <div class="clock-display-card glass-panel">
+            <div class="clock-badge badge-cyan">ЧАСЫ НА ЗЕМЛЕ (НАБЛЮДАТЕЛЬ)</div>
+            <div class="clock-time-val" id="earth-clock">00:00:00</div>
+            <div class="clock-counter" id="earth-years-passed">Прошло на Земле: <strong class="highlight-cyan">0 дней</strong></div>
+            <div class="clock-status-bar">
+              <span class="clock-pulse"></span> Нормальное течение времени (1.0x)
+            </div>
+          </div>
+
+          <div class="time-warp-factor-indicator">
+            <div class="factor-label">ФАКТОР ЗАМЕДЛЕНИЯ $\gamma$</div>
+            <div class="factor-number" id="dilation-factor-display">61,320×</div>
+            <div class="factor-desc">1 минута экипажа = <span id="factor-earth-equivalent">42.5 дня на Земле</span></div>
+          </div>
+
+          <div class="clock-display-card glass-panel highlight-border">
+            <div class="clock-badge badge-purple">ЧАСЫ ВАШЕГО КОРАБЛЯ</div>
+            <div class="clock-time-val" id="ship-clock">00:00:00</div>
+            <div class="clock-counter">Ваш биологический возраст: <strong class="highlight-purple">+0 сек</strong></div>
+            <div class="clock-status-bar">
+              <span class="clock-pulse pulse-purple"></span> Сильное гравитационное торможение
+            </div>
+          </div>
+        </div>
+
+        <div class="dilation-actions">
+          <button id="start-time-exp-btn" class="btn-neon-primary glow-cyan">
+            <span id="exp-btn-text">ЗАПУСТИТЬ ТАЙМЕР ЭКСПЕДИЦИИ</span>
+          </button>
+          <button id="reset-time-exp-btn" class="glass-btn">
+            <span>СБРОСИТЬ ВРЕМЯ</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: EXOPLANET EXPLORATION & SPECTRAL SCAN -->
+    <section id="exoplanets" class="space-section exoplanet-section">
+      <div class="section-header">
+        <div class="badge-tag">КАТАЛОГ ДАЛЕКИХ МИРОВ</div>
+        <h2 class="section-title">ЭКЗОПЛАНЕТЫ И ЗОНЫ ОБИТАЕМОСТИ</h2>
+        <p class="section-subtitle">Среди более чем 5 500 подтвержденных миров есть те, где возможна жизнь или океаны из жидкого метана</p>
+      </div>
+
+      <div class="exoplanets-grid">
+        <!-- Planet Card 1 -->
+        <article class="exo-card glass-panel" data-sound="kepler">
+          <div class="card-ambient-glow glow-gold"></div>
+          <div class="card-chip">ЗОНА ЖИЗНИ</div>
+          <div class="exo-visual">
+            <div class="exo-planet-sphere sphere-kepler"></div>
+            <div class="exo-ring-glow"></div>
+          </div>
+          <h3 class="exo-title">Kepler-452b</h3>
+          <p class="exo-system">Созвездие Лебедя • 1,400 св. лет</p>
+          <p class="exo-info">Старший двоюродный брат Земли. Вращается вокруг солнцеподобной звезды G2V. Год длится 385 дней. Радиус на 60% больше земного.</p>
+          <div class="exo-specs">
+            <div><span>ESI Индекс:</span> <strong>0.83</strong></div>
+            <div><span>Гравитация:</span> <strong>~1.9 g</strong></div>
+            <div><span>Вода:</span> <strong>Вероятно жидкая</strong></div>
+          </div>
+          <button class="exo-audio-scan-btn glass-btn" data-freq="340">
+            <span>🔊 ПРОСЛУШАТЬ СПЕКТР</span>
+          </button>
+        </article>
+
+        <!-- Planet Card 2 -->
+        <article class="exo-card glass-panel" data-sound="trappist">
+          <div class="card-ambient-glow glow-cyan"></div>
+          <div class="card-chip">ВОДНЫЙ МИР</div>
+          <div class="exo-visual">
+            <div class="exo-planet-sphere sphere-trappist"></div>
+            <div class="exo-ring-glow"></div>
+          </div>
+          <h3 class="exo-title">TRAPPIST-1e</h3>
+          <p class="exo-system">Созвездие Водолея • 39 св. лет</p>
+          <p class="exo-info">Один из семи каменистых миров ультрахолодного красного карлика. Плотное железное ядро, умеренная температура и океаны глубиной в сотни километров.</p>
+          <div class="exo-specs">
+            <div><span>ESI Индекс:</span> <strong>0.85</strong></div>
+            <div><span>Гравитация:</span> <strong>0.93 g</strong></div>
+            <div><span>Плотность:</span> <strong>Схожа с Землей</strong></div>
+          </div>
+          <button class="exo-audio-scan-btn glass-btn" data-freq="420">
+            <span>🔊 ПРОСЛУШАТЬ СПЕКТР</span>
+          </button>
+        </article>
+
+        <!-- Planet Card 3 -->
+        <article class="exo-card glass-panel" data-sound="wasp">
+          <div class="card-ambient-glow glow-purple"></div>
+          <div class="card-chip">ПЛАМЕННЫЙ АД</div>
+          <div class="exo-visual">
+            <div class="exo-planet-sphere sphere-wasp"></div>
+            <div class="exo-ring-glow"></div>
+          </div>
+          <h3 class="exo-title">WASP-76b</h3>
+          <p class="exo-system">Созвездие Рыб • 640 св. лет</p>
+          <p class="exo-info">Сверхгорячий юпитер с приливным захватом. На дневной стороне температура достигает 2,400°C, испаряя железо, которое выпадает железным дождем на темной стороне.</p>
+          <div class="exo-specs">
+            <div><span>Температура:</span> <strong>2 400 °C</strong></div>
+            <div><span>Осадки:</span> <strong>Жидкое железо</strong></div>
+            <div><span>Период:</span> <strong>1.8 дня</strong></div>
+          </div>
+          <button class="exo-audio-scan-btn glass-btn" data-freq="180">
+            <span>🔊 ПРОСЛУШАТЬ СПЕКТР</span>
+          </button>
+        </article>
+      </div>
+    </section>
+
+    <!-- SECTION 6: COSMIC PHENOMENA & GENERATIVE STAR CHART -->
+    <section id="phenomena" class="space-section phenomena-section">
+      <div class="section-header">
+        <div class="badge-tag">КАТАКЛИЗМЫ И СТРУКТУРЫ</div>
+        <h2 class="section-title">ГРАНДИОЗНЫЕ ФЕНОМЕНЫ</h2>
+        <p class="section-subtitle">События колоссальной мощности, меняющие физику Вселенной</p>
+      </div>
+
+      <div class="phenomena-showcase">
+        <div class="phenomenon-item glass-panel">
+          <div class="phenom-number">01</div>
+          <div class="phenom-content">
+            <h3>Столкновение Нейтронных Звезд (Килоновая)</h3>
+            <p>Слияние двух сверхплотных объектов порождает гравитационные волны, регистрируемые детекторами LIGO, и синтезирует тяжелейшие элементы Вселенной — платину, уран и тонны золота.</p>
+            <div class="phenom-tags">
+              <span>Гравитационные волны</span>
+              <span>R-процесс нуклеосинтеза</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="phenomenon-item glass-panel">
+          <div class="phenom-number">02</div>
+          <div class="phenom-content">
+            <h3>Космическая Паутина и Темная Материя</h3>
+            <p>Крупномасштабная структура Вселенной напоминает нейронную сеть мозга: триллионы галактик связаны тонкими нитями невидимой темной материи, образуя гигантские пустоты (войды).</p>
+            <div class="phenom-tags">
+              <span>Темная материя (85%)</span>
+              <span>Войд Волопаса</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="phenomenon-item glass-panel">
+          <div class="phenom-number">03</div>
+          <div class="phenom-content">
+            <h3>Квазары — Маяки Первобытного Космоса</h3>
+            <p>Активные ядра молодых галактик, излучающие в тысячи раз больше энергии, чем весь Млечный Путь вместе взятый, видимые с расстояний в более чем 13 миллиардов световых лет.</p>
+            <div class="phenom-tags">
+              <span>Сверхсветимость</span>
+              <span>Красное смещение</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE COSMIC TRANSMISSION / MESSAGE TO THE STARS -->
+    <section class="space-section radio-transmission-section">
+      <div class="radio-card glass-panel">
+        <div class="radio-header">
+          <div class="radio-scanner-ring">
+            <span class="scanner-sweep"></span>
+          </div>
+          <div>
+            <h3>ОТПРАВИТЬ СИГНАЛ В ГЛУБОКИЙ КОСМОС</h3>
+            <p>Закодируйте ваше послание в двоичный радиосигнал (проект типа Arecibo / METI)</p>
+          </div>
+        </div>
+
+        <div class="radio-form-group">
+          <input type="text" id="cosmic-message-input" placeholder="Введите ваше сообщение для иных цивилизаций..." class="cyber-input" value="Мы ищем свет среди звезд. Земля приветствует вас.">
+          <button id="transmit-btn" class="btn-neon-primary glow-cyan">
+            <span>ОТПРАВИТЬ РАДИОЛУЧ</span>
+            <span class="signal-icon">📡</span>
+          </button>
+        </div>
+
+        <div id="transmission-log" class="transmission-console">
+          <div class="console-line">> СТАТУС ПЕРЕДАТЧИКА: ГОТОВ К МОДУЛЯЦИИ НА ЧАСТОТЕ 1.420 ГГц (ЛИНИЯ ВОДОРОДА)</div>
+          <div class="console-line">> СИСТЕМА НАВЕДЕНИЯ: ТАРГЕТ СИСТЕМА TRAPPIST-1</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="cosmic-footer">
+      <div class="footer-grid">
+        <div class="footer-info">
+          <div class="brand-text">
+            <span class="brand-title">COSMOS // ОДИССЕЯ</span>
+            <p>Интерактивная научная платформа об астрофизике, релятивистской механике и исследовании дальнего космоса.</p>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h4>ИССЛЕДОВАНИЯ</h4>
+          <a href="#planetarium">3D Обсерватория</a>
+          <a href="#spacetime">Сингулярность</a>
+          <a href="#dilation">Замедление времени</a>
+          <a href="#exoplanets">Экзопланеты</a>
+        </div>
+        <div class="footer-links">
+          <h4>НАУЧНЫЕ БАЗЫ</h4>
+          <a href="https://hubblesite.org" target="_blank" rel="noreferrer">Hubble Space Telescope ↗</a>
+          <a href="https://webb.nasa.gov" target="_blank" rel="noreferrer">James Webb Space Telescope ↗</a>
+          <a href="https://www.eso.org" target="_blank" rel="noreferrer">European Southern Observatory ↗</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 COSMOS // CHRONICLES OF DEEP SPACE. ВСЕЛЕННАЯ БЕСКОНЕЧНА.</span>
+        <button id="back-to-top-btn" class="glass-pill">НАВЕРХ ↑</button>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Interactive Scripts -->
+  <script src="sound-synth.js"></script>
+  <script src="space-engine.js"></script>
+  <script src="spacetime-grid.js"></script>
+  <script src="time-dilation.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
